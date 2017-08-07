@@ -1,6 +1,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6">
+              <h1>admin</h1>
                 <a href="<?php echo site_url('admin/tambahabout');?>">
                     <i class="fa fa-plus"></i>
                     <label>Tentang Kami</label>
