@@ -7,13 +7,75 @@ class Admin extends CI_Controller {
 			parent::__construct();
 			$this->load->library('template');
 			$this->load->model('webmodel');
+			$this->load->library('session');
 			$this->load->helper(array('form', 'url'));
 			
 		}
 
 	public function index()
+	{	
+		$masuk = $this->session->userdata('isLogedIn');
+			if ( $masuk ) {
+				$data['datapesan'] = $this->webmodel->tampildatapesan();
+				$this->template->halamanadmin('admin/v_dashboard',$data);
+			}else {
+				$this->session->set_flashdata('sukses','Harus Login Terlebih dahulu!');
+		 		redirect(site_url('admin/login'));
+			}
+	
+	}
+
+	public function login()
 	{
-		$this->template->halamanadmin('admin/v_konten');
+		$this->load->view('admin/v_login');
+	}
+
+	public function logout()
+	{
+		$this->session->sess_destroy();
+		redirect(site_url("admin/login"));
+
+	}
+
+	public function aksilogin()
+	{
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
+		$where = array(
+			'username' => $username,
+			'password' => md5($password)
+			);
+		$cek = $this->webmodel->ceklogin("admin",$where)->num_rows();
+		if($cek > 0){
+
+			$query = $this->db->get('admin');
+			$datauser = $query->row_array();
+
+			$namauser = $datauser['nama_admin'];
+			$foto 	  = $datauser['foto'];
+			$email    = $datauser['email'];
+
+			$data_session = array(
+				'nama'	=> $namauser,
+				'foto' 	=> $foto,
+				'email'	=> $email, 
+				'isLogedIn' => true
+				);
+
+			$this->session->set_userdata($data_session);
+
+			redirect(site_url("admin"));
+
+		}else{
+			$this->session->set_flashdata('sukses','Oops...Username/password salah');
+		 	redirect(site_url('admin/login'));
+		}
+	}
+
+	public function hapuspesan($id)
+	{
+		$this->webmodel->hapuspesan($id);
+	    redirect(site_url('admin'));
 	}
 
 	public function menu()

@@ -6,9 +6,28 @@
 	
 	class Webmodel extends CI_Model
 	{
+
+		public function ceklogin($table,$where)
+		{
+			return $this->db->get_where($table,$where);
+		}
+
+		
+
 		public function tambahmenu($datamenu)
 		{
 			$this->db->insert('tabel_menu',$datamenu);
+		}
+
+		public function hapuspesan($id)
+		{
+			$this->db->where('id_saran',$id);
+			$this->db->delete('tabel_sarankritik');
+		}
+
+		public function tambahpesan($datakritiksaran)
+		{
+			$this->db->insert('tabel_sarankritik',$datakritiksaran);
 		}
 		
 		public function tampildatamenu()
@@ -17,6 +36,14 @@
 			$datamenu = $query->result_array();
 			return $datamenu;
 		}
+
+		public function tampildatapesan()
+		{
+			$query = $this->db->get('tabel_sarankritik');
+			$datapesan = $query->result_array();
+			return $datapesan;
+		}
+
 		public function editmenu($idnya,$table)
 		{
 			return $this->db->get_where($table,$idnya);	
@@ -72,6 +99,13 @@
 			$query = $this->db->get('tabel_lokasi');
 			$datalokasi = $query->result_array();
 			return $datalokasi;
+		}
+
+		public function tampildatajambuka()
+		{
+			$query = $this->db->get('tabel_lokasi');
+			$datajambuka = $query->row_array();
+			return $datajambuka;
 		}
 
 		public function editlokasi($idnya,$table)
